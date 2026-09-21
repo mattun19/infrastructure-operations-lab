@@ -1,0 +1,46 @@
+---
+- name: Configure web service on Sakura VPS
+  hosts: sakura_vps
+  become: true
+
+  tasks:
+    - name: Install nginx
+      ansible.builtin.package:
+        name: nginx
+        state: present
+
+    - name: Ensure nginx is enabled and started
+      ansible.builtin.service:
+        name: nginx
+        state: started
+        enabled: true
+
+    - name: Deploy test web page
+      ansible.builtin.copy:
+        dest: /usr/share/nginx/html/index.html
+        owner: root
+        group: root
+        mode: "0644"
+        content: |
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <meta charset="UTF-8">
+            <title>Sakura VPS Infrastructure Lab</title>
+          </head>
+          <body>
+            <h1>Sakura VPS Infrastructure Lab</h1>
+            <p>This page is managed by Ansible.</p>
+          </body>
+          </html>
+
+    - name: Verify nginx responds with HTTP 200
+      ansible.builtin.uri:
+        url: http://127.0.0.1/
+        status_code: 200
+        return_content: true
+      register: nginx_check
+
+    - name: Show HTTP status
+      ansible.builtin.debug:
+        msg: "Nginx HTTP status: {{ nginx_check.status }}"

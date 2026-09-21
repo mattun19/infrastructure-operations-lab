@@ -1,0 +1,21 @@
+---
+- name: Check Sakura VPS
+  hosts: sakura_vps
+  gather_facts: true
+
+  tasks:
+    - name: Show hostname
+      ansible.builtin.debug:
+        msg: "Hostname: {{ ansible_facts['hostname'] }}"
+
+    - name: Show OS
+      ansible.builtin.debug:
+        msg: "OS: {{ ansible_facts['distribution'] }} {{ ansible_facts['distribution_version'] }}"
+
+    - name: Show default IPv4 address
+      ansible.builtin.debug:
+        msg: "IPv4: {{ ansible_facts['default_ipv4']['address'] }}"
+
+    - name: Show memory
+      ansible.builtin.debug:
+        msg: "Memory: {{ ansible_facts['memtotal_mb'] }} MB"

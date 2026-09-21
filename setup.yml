@@ -1,0 +1,19 @@
+---
+- name: Configure Sakura VPS
+  hosts: sakura_vps
+  become: true
+
+  tasks:
+    - name: Install basic packages
+      ansible.builtin.package:
+        name:
+          - curl
+          - git
+          - chrony
+        state: present
+
+    - name: Ensure chronyd is enabled and started
+      ansible.builtin.service:
+        name: chronyd
+        state: started
+        enabled: true
