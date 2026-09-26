@@ -1,1 +1,2 @@
 ansible/inventory/hosts.ini
+logs/*.jsonl

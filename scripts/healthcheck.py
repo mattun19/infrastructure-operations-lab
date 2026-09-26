@@ -5,6 +5,7 @@ import os
 import sys
 import time
 from datetime import datetime, timezone
+from pathlib import Path
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
@@ -12,10 +13,17 @@ from urllib.request import Request, urlopen
 target_url = os.environ.get("TARGET_URL")
 
 if not target_url:
-    print("ERROR: TARGET_URL is not set.", fule=sys.stderr)
+    print("ERROR: TARGET_URL is not set.", file=sys.stderr)
     sys.exit(2)
 
 timeout = float(os.environ.get("TIMEOUT_SECONDS", "5"))
+
+log_file = Path(
+    os.environ.get(
+        "LOG_FILE",
+        "logs/healthcheck.jsonl"
+    )
+)
 
 result = {
     "timestamp": datetime.now(timezone.utc).isoformat(),
@@ -52,6 +60,13 @@ except HTTPError as error:
 
 except (URLError, TimeoutError) as error:
     result["error"] = str(error)
+
+log_file.parent.mkdir(parents=True, exist_ok=True)
+
+with log_file.open("a", encoding="utf-8") as file:
+    file.write(
+            json.dumps(result, ensure_ascii=False) + "\n"
+    )
 
 print(json.dumps(result, ensure_ascii=False))
 
