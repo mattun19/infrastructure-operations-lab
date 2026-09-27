@@ -1,0 +1,8 @@
+[Unit]
+Description=HTTP health check for Sakura VPS
+
+[Service]
+Type=oneshot
+WorkingDirectory=/home/shin/infrastructure-operations-lab
+EnvironmentFile=/home/shin/.config/infrastructure-operations-lab/healthcheck.env
+ExecStart=/usr/bin/python3 /home/shin/infrastructure-operations-lab/scripts/healthcheck.py

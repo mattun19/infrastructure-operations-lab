@@ -1,2 +1,3 @@
 ansible/inventory/hosts.ini
 logs/*.jsonl
+config/healthcheck.env

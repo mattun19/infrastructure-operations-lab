@@ -1,0 +1,10 @@
+[Unit]
+Description=Run Sakura VPS health check every 5 minutes
+
+[Timer]
+OnBootSec=1min
+OnUnitActiveSec=5min
+Unit=healthcheck.service
+
+[Install]
+WantedBy=timers.target
