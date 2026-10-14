@@ -34,9 +34,18 @@
           </body>
           </html>
 
+    - name: Deploy health check endpoint
+      ansible.builtin.copy:
+        dest: /usr/share/nginx/html/health
+        owner: root
+        group: root
+        mode: "0644"
+        content: |
+          OK
+
     - name: Verify nginx responds with HTTP 200
       ansible.builtin.uri:
-        url: http://127.0.0.1/
+        url: http://127.0.0.1/health
         status_code: 200
         return_content: true
       register: nginx_check
