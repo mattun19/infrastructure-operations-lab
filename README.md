@@ -239,12 +239,18 @@ infrastructure-operations-lab/
 cp ansible/inventory/hosts.example.ini ansible/inventory/hosts.ini
 ```
 
-環境に合わせて `hosts.ini` を編集し、Playbookを実行します。
+環境に合わせて `hosts.ini` を編集し、以下の順番でPlaybookを実行します。
+
+基本パッケージのインストールとchronydの設定：
 
 ```bash
-ansible-playbook \
-  -i ansible/inventory/hosts.ini \
-  ansible/web.yml
+ansible-playbook -i ansible/inventory/hosts.ini ansible/setup.yml
+```
+
+Nginxとヘルスチェック用エンドポイントの構築：
+
+```bash
+ansible-playbook -i ansible/inventory/hosts.ini ansible/web.yml
 ```
 
 監視用設定では、実環境に合わせて監視対象URLを指定します。
