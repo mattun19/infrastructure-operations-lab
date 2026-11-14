@@ -254,6 +254,65 @@ TARGET_URL=http://YOUR_VPS_IP/health
 TIMEOUT_SECONDS=5
 ```
 
+### systemd timerによる定期監視
+
+WSL2 / Ubuntu上でsystemdユーザーサービスを使用し、
+PythonのHTTP監視を5分間隔で実行します。
+
+以下は、リポジトリをホームディレクトリ直下に
+cloneした環境を前提としています。
+
+#### 1. 監視設定
+
+```bash
+mkdir -p ~/.config/infrastructure-operations-lab
+
+cp config/healthcheck.env.example \
+  ~/.config/infrastructure-operations-lab/healthcheck.env
+
+nano ~/.config/infrastructure-operations-lab/healthcheck.env
+
+chmod 600 ~/.config/infrastructure-operations-lab/healthcheck.env
+```
+
+監視対象URLを実環境に合わせて変更してください。
+
+#### 2. systemdユニットの配置
+
+```bash
+mkdir -p ~/.config/systemd/user
+
+cp systemd/healthcheck.service \
+  ~/.config/systemd/user/
+
+cp systemd/healthcheck.timer \
+  ~/.config/systemd/user/
+```
+
+#### 3. timerの有効化
+
+```bash
+systemctl --user daemon-reload
+systemctl --user enable --now healthcheck.timer
+```
+
+#### 4. 動作確認
+
+```bash
+systemctl --user status healthcheck.timer
+
+systemctl --user start healthcheck.service
+
+journalctl --user -u healthcheck.service -n 20 --no-pager
+
+tail -n 5 logs/healthcheck.jsonl
+```
+
+監視結果はJSONL形式で保存されます。
+
+※WSL2が停止している間、定期監視は実行されません。
+※監視先がDOWNの場合、serviceは終了コード1を返します。
+
 ## Security
 
 実環境固有の以下の情報はGit管理対象から除外しています。
